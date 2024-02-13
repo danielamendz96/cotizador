@@ -1,20 +1,40 @@
 import { Fragment} from 'react'
 import {MARCAS, YEARS, PLANES} from '../constants'
 import UseCotizador from '../hooks/UseCotizador';
+import Error from './Error';
 
 
 
 const Formulario = () => {
 
+    const {handleChangeDatos, datos, error, setError, cotizarSeguro} = UseCotizador()
+
+    const handleSubmit = e => {
+        e.preventDefault()
+
+        if(Object.values(datos).includes('')){
+            setError('Todos los campos son obligatorios')
+            return
+
+        }
+        setError('')
+        cotizarSeguro()
+    }
 
   return (
     <>
-    <form>
+    {error && <Error/>}
+    <form
+        onSubmit={handleSubmit}
+    >
         <div className='my-5'>
             <label className='block mb-3 font-bold text-gray-600 uppercase'>Marca</label>
             <select 
                 name= 'marca'
-                className='w-full p-3 bg-white border border-gray-300'>
+                className='w-full p-3 bg-white border border-gray-300'
+                onChange={e => handleChangeDatos(e)}
+                value={datos.marca}
+                >
                 <option value=''>--Selecciona Marca--</option>
                 {MARCAS.map(marca =>(
                     <option
@@ -29,8 +49,11 @@ const Formulario = () => {
         <div className='my-5'>
             <label className='block mb-3 font-bold text-gray-600 uppercase'>Año</label>
             <select 
-                name= 'año'
-                className='w-full p-3 bg-white border border-gray-300'>
+                name= 'year'
+                className='w-full p-3 bg-white border border-gray-300'
+                onChange={e => handleChangeDatos(e)}
+                value={datos.year}
+                >
                 <option value=''>--Selecciona Año--</option>
                 {YEARS.map(year =>(
                     <option
@@ -57,6 +80,7 @@ const Formulario = () => {
                         type='radio'
                         name='plan'
                         value={plan.id}
+                        onChange={e => handleChangeDatos(e)}
                         />
                     </Fragment>
                 ))}
